@@ -16,6 +16,7 @@ Easy, all you need is create fake gmail account, go Enable less secure apps and 
 I won't take any responsability for your usage. Good luck
 
 ## Contact me?
-
-	(Linkedin)[www.linkedin.com]
-	(Email)[emailto:riadhriah03@gmail.com]
+Via:
+Linkedin: Riadh Benlamine
+Or
+riadhriah03@gmail.com
