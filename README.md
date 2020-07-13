@@ -20,3 +20,5 @@ Via:
 Linkedin: Riadh Benlamine
 Or
 riadhriah03@gmail.com
+
+Please report your bugs/issues and will solve them as soon as possible
