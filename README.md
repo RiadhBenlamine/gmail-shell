@@ -22,7 +22,3 @@ then use it as bot email, start sending commands from gmail to 'bot email' and y
 - Payload generator.
 ## Disclaimer
 I won't take any responsability for your usage. Good luck
-
-## Contact me?
-[Linkedin](www.linkedin.com/)
-[Email](emailto:riadhriah03@gmail.com)
